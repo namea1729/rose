@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Quantum resistant (XOR based) encrption and decryption.">
+    <meta name="keywords" content="Quantum, XOR, Encryption, Decrytpion, Rose, QRXOROSED">
+    <meta name="author" content="Name A. 1729">
+    <title>Rose</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Rose <span style="font-size: small;">(Quantum Resistant XOR OpenSource Encryption/Decryption)</span></h1>   
+    <details open id="decryptSection">
+        <summary><h3>Decrypt</h3></summary>
+        <label for="encryptedTextInput">Enter encrypted text (Base64):</label><br>
+        <textarea id="encryptedTextInput" placeholder="Paste encrypted text here..." data-status="initial"></textarea><br>
+        <label for="decryptKeyInput">Enter decryption key:</label><br>
+        <input type="text" id="decryptKeyInput" placeholder="Enter key..."><br>
+        <button type="button" onclick="decrypt()">Decrypt</button><br>
+        <div id="decryptOutput"></div>
+    </details>
+    <details open id="encryptSection">
+        <summary><h3>Encrypt</h3></summary>
+        <label for="textToEncryptInput">Enter text to encrypt:</label><br>
+        <textarea id="textToEncryptInput" placeholder="Enter plaintext here..." data-status="initial"></textarea><br>
+        <label for="encryptKeyInput">Enter encryption key:</label><br>
+        <input type="text" id="encryptKeyInput" placeholder="Enter key..."><br>
+        <button type="button" onclick="encrypt()">Encrypt</button><br>
+        <div id="encryptOutput"></div>
+    </details>
+
+    <br><br><br>
+    <details>
+        <summary>How this works</summary>
+        <p>TODO</p>
+    </details>
+    <details>
+        <summary>Code</summary>
+        <p>
+            All code used is available on github <a href="">here</a>.
+        </p>
+    </details>
+    <script src="script.js"></script>
+</body>
+</html>
