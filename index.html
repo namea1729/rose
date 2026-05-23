@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,26 +10,55 @@
     <title>Rose</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <h1>Rose <span style="font-size: small;">(Quantum Resistant XOR OpenSource Encryption/Decryption)</span></h1>   
-    <details open id="decryptSection">
-        <summary><h3>Decrypt</h3></summary>
-        <label for="encryptedTextInput">Enter encrypted text (Base64):</label><br>
-        <textarea id="encryptedTextInput" placeholder="Paste encrypted text here..." data-status="initial"></textarea><br>
-        <label for="decryptKeyInput">Enter decryption key:</label><br>
-        <input type="text" id="decryptKeyInput" placeholder="Enter key..."><br>
-        <button type="button" onclick="decrypt()">Decrypt</button><br>
-        <div id="decryptOutput"></div>
-    </details>
-    <details open id="encryptSection">
-        <summary><h3>Encrypt</h3></summary>
-        <label for="textToEncryptInput">Enter text to encrypt:</label><br>
-        <textarea id="textToEncryptInput" placeholder="Enter plaintext here..." data-status="initial"></textarea><br>
-        <label for="encryptKeyInput">Enter encryption key:</label><br>
-        <input type="text" id="encryptKeyInput" placeholder="Enter key..."><br>
-        <button type="button" onclick="encrypt()">Encrypt</button><br>
-        <div id="encryptOutput"></div>
-    </details>
+    <h1>Rose <span style="font-size: small;">(Quantum Resistant XOR OpenSource Encryption/Decryption)</span></h1>
+    <table>
+        <tbody>
+            <tr id="layoutSwitcher">
+                <div id="layoutSwitcher">
+                    <label for="uALcb">Use alternative layout?</label>
+                    <input type="checkbox" name="uALcb" id="uALcb">&nbsp;&nbsp;&nbsp;
+                    <button type="button" onclick="document.getElementById('layoutSwitcher').outerHTML='';">X</button>
+                </div>
+            </tr>
+            <tr id="layout1">
+                <div>
+                                    <td id="decryptSection">
+                    <h3>Decrypt</h3>
+                    <label for="encryptedTextInput">Enter encrypted text (Base64):</label><br>
+                    <textarea id="encryptedTextInput" placeholder="Paste encrypted text here..."
+                        data-status="initial"></textarea><br>
+                    <label for="decryptKeyInput">Enter decryption key:</label><br>
+                    <input type="text" id="decryptKeyInput" placeholder="Enter key..."><br>
+                    <button type="button" onclick="decrypt()">Decrypt</button><br>
+                    <div id="decryptOutput"></div>
+                </td>
+                <td id="encryptSection">
+                    <h3>Encrypt</h3>
+                    <label for="textToEncryptInput">Enter text to encrypt:</label><br>
+                    <textarea id="textToEncryptInput" placeholder="Enter plaintext here..."
+                        data-status="initial"></textarea><br>
+                    <label for="encryptKeyInput">Enter encryption key:</label><br>
+                    <input type="text" id="encryptKeyInput" placeholder="Enter key..."><br>
+                    <button type="button" onclick="encrypt()">Encrypt</button><br>
+                    <div id="encryptOutput"></div>
+                </td>
+
+                </div>
+            </tr>
+            <tr>
+                <div id="layout2">
+                    <h3>Encrypt/Decrypt</h3>
+                    <textarea id="uniTextInput2" placeholder="Enter text here..." data-status="initial"></textarea><br>
+                    <input type="text" id="uniKeyInput2" placeholder="Enter key..."><br>
+                    <button type="button" onclick="decrypt2()">Decrypt</button>
+                    <button type="button" onclick="encrypt2()">Encrypt</button>
+                    <div id="uniOutput2"></div>
+                </div>
+            </tr>
+        </tbody>
+    </table>
 
     <br><br><br>
     <details>
@@ -38,9 +68,23 @@
     <details>
         <summary>Code</summary>
         <p>
-            All code used is available on github <a href="">here</a>.
+            All code used is available on github <a href="https://github.com/namea1729/rose/">here</a>.
         </p>
     </details>
     <script src="script.js"></script>
+    <script>
+        let uALcbInterval = setInterval(() => {
+            let cb = document.getElementById("uALcb");
+            if (cb == null) clearInterval(uALcbInterval);
+            if (cb.checked) {
+                document.getElementById("layout1").setAttribute("style", "display:none;");
+                document.getElementById("layout2").setAttribute("style", "");
+            }else{
+                document.getElementById("layout1").setAttribute("style", "");
+                document.getElementById("layout2").setAttribute("style", "display:none;");
+            }
+        }, 100);
+    </script>
 </body>
+
 </html>

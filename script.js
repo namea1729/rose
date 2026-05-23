@@ -95,8 +95,56 @@ function decrypt() {
         outputEl.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
     }
 }
+function encrypt2() {
+    const plaintextEl = document.getElementById("uniTextInput2");
+    const keyEl = document.getElementById("uniKeyInput2");
+    const outputEl = document.getElementById("uniOutput2");
+
+    try {
+        const plaintext = plaintextEl.value.trim();
+        const key = keyEl.value.trim();
+
+        if (!plaintext || !key) {
+            outputEl.innerHTML = '<p style="color: red;">Error: Please enter both text and the key.</p>';
+            return;
+        }
+
+        const encrypted = XORCipher.encrypt(plaintext, key);
+        outputEl.innerHTML = `
+            <h4>Result:</h4>
+            <textarea readonly>${encrypted}</textarea>
+            <button onclick="copyToClipboard('${encrypted.replace(/'/g, "\\'")}')">Copy to Clipboard</button>
+        `;
+        plaintextEl.setAttribute("data-status", "encrypted");
+    } catch (error) {
+        outputEl.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+    }
+}
+function decrypt2() {
+    const ciphertextEl = document.getElementById("uniTextInput2");
+    const keyEl = document.getElementById("uniKeyInput2");
+    const outputEl = document.getElementById("uniOutput2");
+    try {
+        const ciphertext = ciphertextEl.value.trim();
+        const key = keyEl.value.trim();
+        if (!ciphertext || !key) {
+            outputEl.innerHTML = '<p style="color: red;">Error: Please enter both encrypted text and the key.</p>';
+            return;
+        }
+        const decrypted = XORCipher.decrypt(ciphertext, key);
+        outputEl.innerHTML = `
+            <h4>Result:</h4>
+            <textarea readonly>${decrypted}</textarea>
+            <button onclick="copyToClipboard('${decrypted.replace(/'/g, "\\'")}')">Copy to Clipboard</button>
+        `;
+        ciphertextEl.setAttribute("data-status", "decrypted");
+    } catch (error) {
+        outputEl.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+    }
+}
+
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
-        alert("Copied!");
+        // alert("Copied!");
     });
 }
