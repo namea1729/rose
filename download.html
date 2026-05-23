@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Quantum resistant (XOR based) encrption and decryption.">
+    <meta name="keywords" content="Quantum, XOR, Encryption, Decrytpion, Rose, QRXOROSED">
+    <meta name="author" content="Name A. 1729">
+    <title>Rose</title>
+    <style>
+        * {
+            background-color: #090909;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Rose <span style="font-size: small;">(Quantum Resistant XOR OpenSource Encryption/Decryption)</span></h1>
+    <table>
+        <tbody>
+            <tr id="layoutSwitcher">
+                <div id="layoutSwitcher">
+                    <label for="uALcb">Use alternative layout?</label>
+                    <input type="checkbox" name="uALcb" id="uALcb">&nbsp;&nbsp;&nbsp;
+                    <button type="button" onclick="document.getElementById('layoutSwitcher').outerHTML='';">X</button>
+                </div>
+            </tr>
+            <tr id="layout1">
+                <div>
+                    <td id="decryptSection">
+                        <h3>Decrypt</h3>
+                        <label for="encryptedTextInput">Enter encrypted text (Base64):</label><br>
+                        <textarea id="encryptedTextInput" placeholder="Paste encrypted text here..."
+                            data-status="initial"></textarea><br>
+                        <label for="decryptKeyInput">Enter decryption key:</label><br>
+                        <input type="text" id="decryptKeyInput" placeholder="Enter key..."><br>
+                        <button type="button" onclick="decrypt()">Decrypt</button><br>
+                        <div id="decryptOutput"></div>
+                    </td>
+                    <td id="encryptSection">
+                        <h3>Encrypt</h3>
+                        <label for="textToEncryptInput">Enter text to encrypt:</label><br>
+                        <textarea id="textToEncryptInput" placeholder="Enter plaintext here..."
+                            data-status="initial"></textarea><br>
+                        <label for="encryptKeyInput">Enter encryption key:</label><br>
+                        <input type="text" id="encryptKeyInput" placeholder="Enter key..."><br>
+                        <button type="button" onclick="encrypt()">Encrypt</button><br>
+                        <div id="encryptOutput"></div>
+                    </td>
+
+                </div>
+            </tr>
+            <tr>
+                <div id="layout2">
+                    <h3>Encrypt/Decrypt</h3>
+                    <textarea id="uniTextInput2" placeholder="Enter text here..." data-status="initial"></textarea><br>
+                    <input type="text" id="uniKeyInput2" placeholder="Enter key..."><br>
+                    <button type="button" onclick="decrypt2()">Decrypt</button>
+                    <button type="button" onclick="encrypt2()">Encrypt</button>
+                    <div id="uniOutput2"></div>
+                </div>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br><br>
+    <details>
+        <summary>How this works</summary>
+        <p>TODO</p>
+    </details>
+    <details>
+        <summary>Code</summary>
+        <p>
+            All code used is available on github <a href="https://github.com/namea1729/rose/">here</a> <br>
+            Or downloaded in one file <a href="./download.html" donwload filename="index.html">here</a>
+        </p>
+    </details>
+    <script>
+        let uALcbInterval = setInterval(() => {
+            let cb = document.getElementById("uALcb");
+            if (cb == null) clearInterval(uALcbInterval);
+            if (cb.checked) {
+                document.getElementById("layout1").setAttribute("style", "display:none;");
+                document.getElementById("layout2").setAttribute("style", "");
+            } else {
+                document.getElementById("layout1").setAttribute("style", "");
+                document.getElementById("layout2").setAttribute("style", "display:none;");
+            }
+        }, 100);
+        class XORCipher {
+            static encrypt(plaintext, key) {
+                if (!plaintext || !key) {
+                    throw new Error("Plaintext and/or key is empty");
+                }
+                const plaintextBytes = this.stringToBytes(plaintext);
+                const keyBytes = this.stringToBytes(key);
+                const encryptedBytes = this.xorBytes(plaintextBytes, keyBytes);
+                return this.bytesToBase64(encryptedBytes);
+            }
+            static decrypt(ciphertext, key) {
+                if (!ciphertext || !key) {
+                    throw new Error("Ciphertext and/or key is empty");
+                }
+                const ciphertextBytes = this.base64ToBytes(ciphertext);
+                const keyBytes = this.stringToBytes(key);
+                const plaintextBytes = this.xorBytes(ciphertextBytes, keyBytes);
+                return this.bytesToString(plaintextBytes);
+            }
+            static stringToBytes(str) {
+                const encoder = new TextEncoder();
+                return encoder.encode(str);
+            }
+            static bytesToString(bytes) {
+                const decoder = new TextDecoder();
+                return decoder.decode(bytes);
+            }
+            static xorBytes(data, key) {
+                const result = new Uint8Array(data.length);
+                for (let i = 0; i < data.length; i++) {
+                    result[i] = data[i] ^ key[i % key.length];
+                }
+                return result;
+            }
+            static bytesToBase64(bytes) {
+                let binaryString = '';
+                for (let i = 0; i < bytes.length; i++) {
+                    binaryString += String.fromCharCode(bytes[i]);
+                }
+                return btoa(binaryString);
+            }
+            static base64ToBytes(base64) {
+                const binaryString = atob(base64);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                return bytes;
+            }
+        }
+        function encrypt() {
+            const plaintextEl = document.getElementById("textToEncryptInput");
+            const keyEl = document.getElementById("encryptKeyInput");
+            const outputEl = document.getElementById("encryptOutput");
+
+            try {
+                const plaintext = plaintextEl.value.trim();
+                const key = keyEl.value.trim();
+
+                if (!plaintext || !key) {
+                    outputEl.innerHTML = '<p style="color: red;">Error: Please enter both text and the key.</p>';
+                    return;
+                }
+
+                const encrypted = XORCipher.encrypt(plaintext, key);
+                outputEl.innerHTML = `
+            <h4>Result:</h4>
+            <textarea readonly>${encrypted}</textarea>
+            <button onclick="copyToClipboard('${encrypted.replace(/'/g, "\\'")}')">Copy to Clipboard</button>
+        `;
+                plaintextEl.setAttribute("data-status", "encrypted");
+            } catch (error) {
+                outputEl.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+        function decrypt() {
+            const ciphertextEl = document.getElementById("encryptedTextInput");
+            const keyEl = document.getElementById("decryptKeyInput");
+            const outputEl = document.getElementById("decryptOutput");
+            try {
+                const ciphertext = ciphertextEl.value.trim();
+                const key = keyEl.value.trim();
+                if (!ciphertext || !key) {
+                    outputEl.innerHTML = '<p style="color: red;">Error: Please enter both encrypted text and the key.</p>';
+                    return;
+                }
+                const decrypted = XORCipher.decrypt(ciphertext, key);
+                outputEl.innerHTML = `
+            <h4>Result:</h4>
+            <textarea readonly>${decrypted}</textarea>
+            <button onclick="copyToClipboard('${decrypted.replace(/'/g, "\\'")}')">Copy to Clipboard</button>
+        `;
+                ciphertextEl.setAttribute("data-status", "decrypted");
+            } catch (error) {
+                outputEl.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+        function encrypt2() {
+            const plaintextEl = document.getElementById("uniTextInput2");
+            const keyEl = document.getElementById("uniKeyInput2");
+            const outputEl = document.getElementById("uniOutput2");
+
+            try {
+                const plaintext = plaintextEl.value.trim();
+                const key = keyEl.value.trim();
+
+                if (!plaintext || !key) {
+                    outputEl.innerHTML = '<p style="color: red;">Error: Please enter both text and the key.</p>';
+                    return;
+                }
+
+                const encrypted = XORCipher.encrypt(plaintext, key);
+                outputEl.innerHTML = `
+            <h4>Result:</h4>
+            <textarea readonly>${encrypted}</textarea>
+            <button onclick="copyToClipboard('${encrypted.replace(/'/g, "\\'")}')">Copy to Clipboard</button>
+        `;
+                plaintextEl.setAttribute("data-status", "encrypted");
+            } catch (error) {
+                outputEl.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+        function decrypt2() {
+            const ciphertextEl = document.getElementById("uniTextInput2");
+            const keyEl = document.getElementById("uniKeyInput2");
+            const outputEl = document.getElementById("uniOutput2");
+            try {
+                const ciphertext = ciphertextEl.value.trim();
+                const key = keyEl.value.trim();
+                if (!ciphertext || !key) {
+                    outputEl.innerHTML = '<p style="color: red;">Error: Please enter both encrypted text and the key.</p>';
+                    return;
+                }
+                const decrypted = XORCipher.decrypt(ciphertext, key);
+                outputEl.innerHTML = `
+            <h4>Result:</h4>
+            <textarea readonly>${decrypted}</textarea>
+            <button onclick="copyToClipboard('${decrypted.replace(/'/g, "\\'")}')">Copy to Clipboard</button>
+        `;
+                ciphertextEl.setAttribute("data-status", "decrypted");
+            } catch (error) {
+                outputEl.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // alert("Copied!");
+            });
+        }
+    </script>
+</body>
+
+</html>
